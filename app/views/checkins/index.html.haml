@@ -1,0 +1,25 @@
+- title "Checkins"
+-unless @checkins.nil?
+  %table.table.table-striped
+    %tr
+      %th Primo
+      %th Turno
+      %th Estado
+    - for checkin in @checkins
+      %tr
+        %td= checkin.employee.name
+        %td= checkin.shift.name
+        - if @logs.where(:employee => checkin.employee.name).empty?
+          %td= link_to "Logearse", checkins_path(:id=>checkin.id), :method=> :post, :class=>"btn"
+        - else
+          %td
+            -st = @logs.where(:employee => checkin.employee.name).first.status
+            -if st==="Absent"
+              %span.label.label-important
+                Ausente
+            -if st==="Late"
+              %span.label.label-warning
+                Tarde
+            -if st==="Ok"
+              %span.label.label-success
+                Ok

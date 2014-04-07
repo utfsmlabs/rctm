@@ -1,0 +1,49 @@
+= form_tag log_path, :method => 'get', :class=>"form-search" do
+  .well.well-blue
+    Primo:
+    = text_field_tag :search, params[:search], :class=>"input-medium search-query",:id=>"auto_complete",:"data-provide"=>"typeahead",:autocomplete=>"off"
+    = submit_tag "Buscar", :name => nil, :class=>"btn"
+    = javascript_tag "var autocomplete_items = #{ @employees.to_json };"
+    .pull-right
+      = "Periodo: " + @Period.name
+      = link_to image_tag("refresh.png"), "/absences", :rel=>"tooltip", :title=>"Actualizar Logs"
+ 
+
+- model_class = Log
+%table.table.table-striped
+  %thead
+    %tr
+      %th= "Día"
+      %th= "Turno"
+      %th= "Primo"
+      %th= model_class.human_attribute_name(:status)
+      %th= "Hora"
+      %th= "Msje"
+  %tbody
+    - @logs.each do |log|
+      %tr
+        %td= l log.day
+        %td= log.shift
+        %td= log.employee
+        %td
+          -st = log.status
+          -if st==="Absent"
+            %span.label.label-important
+              Ausente
+          -if st==="Late"
+            %span.label.label-warning
+              Tarde
+          -if st==="Ok"
+            %span.label.label-success
+              Ok
+        %td= log.time
+        %td
+          -unless st==="Ok"
+            -if log.shift_msg.nil?
+              =link_to image_tag('message_edit.png'),"#",{:id=>log.id , :href=>"#", :role=>"button" ,:'data-toggle'=>"modal",:'data-target'=>"#modalnew", :class=>'newmsg'}
+            -else
+              =link_to image_tag('message_icon.png'),showmsg_path(:idmsg=>log.shift_msg.id),{:role=>"button" ,:'data-toggle'=>"modal",:'data-target'=>"#modalshow", :class=>'showmsg', :remote=>true,  :method=> :post}
+= will_paginate @logs
+=render 'newmsg'
+#modalshow.modal.hide.fade{:tabindex=>"-1", :role=>"dialog" ,:'aria-labelledby'=>"myModalLabel", :'aria-hidden'=>"true"}
+  #showmsg

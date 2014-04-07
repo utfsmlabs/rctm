@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  day: 2012-10-19
+  employee: MyString
+  shift: MyString
+  force_ontime: false
+  absent: false
+
+two:
+  day: 2012-10-19
+  employee: MyString
+  shift: MyString
+  force_ontime: false
+  absent: false
